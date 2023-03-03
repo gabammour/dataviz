@@ -9,8 +9,9 @@
 #colnames(pop) <- pop[1,]
 #pop <- pop[-1,-c(2,4)]
 
-#Importation : 
+#write.csv2(pop, "Base/pop.csv", row.names = FALSE)
 
+#Importation : 
 pop <- read.csv2("Base/pop.csv", sep = ";")
 
 
