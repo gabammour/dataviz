@@ -1,41 +1,33 @@
 library(shiny)
+library(DT)
 
-# Define UI for application that draws a histogram
 ui <- fluidPage(
-  
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
-    )
+  theme = bslib::bs_theme(bootswatch = "lux"),
+  navbarPage("Navigation", tabPanel("Première page")),
+  titlePanel("Indicateurs macroéconomiques par pays."),
+  fluidRow(
+    column(width = 4, textInput("pays", "Choisissez un pays :", "")),
+    column(
+      width = 4,
+      selectInput(
+        "indicateur",
+        "Choisissez un indicateur :",
+        c("Population", "PIB")
+      )
+    ),
+    column(width = 4, actionButton("valider", "Valider"))
+  ),
+  fluidRow(column(width = 6, DTOutput("stats")))
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
+  observeEvent(input$valider, {
+    output$stats <- renderDT({
+      statistiques(pop, input$pays)
     })
+  })
 }
 
-# Run the application 
-shinyApp(ui = ui, server = server)
+shinyApp(ui, server)
+
+
