@@ -2,26 +2,44 @@
 library(DT)
 library(moments)
 library(stringdist)
+
+#Chargement des bases: 
 pop <- read.csv2("Base/pop.csv", sep = ";")
+co2 <- read.csv2("Base/co2.csv", sep = ";")
+pib_hab_ppa <- read.csv2("Base/PIB_hab_ppa.csv", sep = ";")
 
+#Selection de la base de données 
+base_select <- function(nom_base){
+  vect_base <- c("Population", "CO2 par habitants", "PIB par habitants en PPA")
+  if (nom_base == vect_base[1]) { 
+    base <- pop
+  } else if (nom_base == vect_base[2]){ 
+    base <- co2
+  } else if(nom_base == vect_base[3]){ 
+    base <- pib_hab_ppa}
+  return(base)
+}
 
-pays_proche <- function(base, nom_colonne){ 
+#Selection du pays de saisie le plus proche d'un pays répertorié dans la base
+pays_proche <- function(nom_base, nom_colonne){ 
+  base <- base_select(nom_base)
   list_name <- colnames(base)[-1] # On retire la première colonne (années)
   find <-
     stringdist(list_name, nom_colonne, method = "lv")
   return(unique(list_name[which(find == min(find))])[1])
 }
 
-# Statistiques : 
-statistiques <- function(base, nom_colonne) {
-  nom_colonne <- pays_proche(base,nom_colonne)
-  moyenne <- round(mean(base[[nom_colonne]]), 4)
-  mediane <- round(median(base[[nom_colonne]]), 4)
-  ecart_type <- round(sd(base[[nom_colonne]]), 4)
-  minimum <- round(min(base[[nom_colonne]]), 4)
-  maximum <- round(max(base[[nom_colonne]]), 4)
-  kurtosis <- round(e1071::kurtosis(base[[nom_colonne]]), 4)
-  skewness <- round(e1071::skewness(base[[nom_colonne]]), 4)
+# Fonction des statistiques sur la base : 
+statistiques <- function(nom_base, nom_colonne) {
+  base <- base_select(nom_base)
+  nom_colonne <- pays_proche(nom_base,nom_colonne)
+  moyenne <- round(mean(base[[nom_colonne]], na.rm = TRUE), 4)
+  mediane <- round(median(base[[nom_colonne]],na.rm = TRUE), 4)
+  ecart_type <- round(sd(base[[nom_colonne]],na.rm = TRUE), 4)
+  minimum <- round(min(base[[nom_colonne]],na.rm = TRUE), 4)
+  maximum <- round(max(base[[nom_colonne]],na.rm = TRUE), 4)
+  kurtosis <- round(e1071::kurtosis(base[[nom_colonne]],na.rm = TRUE), 4)
+  skewness <- round(e1071::skewness(base[[nom_colonne]],na.rm = TRUE), 4)
   
   resultat <- data.frame(
     "Statistiques" = c(
@@ -63,15 +81,7 @@ statistiques <- function(base, nom_colonne) {
   )
 }
 
-statistiques(pop,"France")
 
-
-
-
-
-
-
-statistiques(pop,pays_proche(pop,"France"))
 
 
 

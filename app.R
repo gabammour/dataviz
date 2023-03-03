@@ -12,7 +12,7 @@ ui <- fluidPage(
       selectInput(
         "indicateur",
         "Choisissez un indicateur :",
-        c("Population", "PIB")
+        c("Population", "CO2 par habitants", "PIB par habitants en PPA")
       )
     ),
     column(width = 4, actionButton("valider", "Valider"))
@@ -23,7 +23,7 @@ ui <- fluidPage(
 server <- function(input, output) {
   observeEvent(input$valider, {
     output$stats <- renderDT({
-      statistiques(pop, input$pays)
+      statistiques(input$indicateur, input$pays)
     })
   })
 }
