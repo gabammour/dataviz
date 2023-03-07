@@ -1,7 +1,7 @@
 # Librairie : 
 library(DT)
-library(moments)
 library(stringdist)
+
 
 #Chargement des bases: 
 pop <- read.csv2("Base/pop.csv", sep = ";")
@@ -40,7 +40,7 @@ statistiques <- function(nom_base, nom_colonne) {
   maximum <- round(max(base[[nom_colonne]],na.rm = TRUE), 4)
   kurtosis <- round(e1071::kurtosis(base[[nom_colonne]],na.rm = TRUE), 4)
   skewness <- round(e1071::skewness(base[[nom_colonne]],na.rm = TRUE), 4)
-  
+  Jarque_bera  <- round(tseries::jarque.bera.test(base[[nom_colonne]])$p.value,4)
   resultat <- data.frame(
     "Statistiques" = c(
       "Moyenne",
@@ -49,7 +49,8 @@ statistiques <- function(nom_base, nom_colonne) {
       "Minimum",
       "Maximum",
       "Kurtosis",
-      "Skewness"
+      "Skewness",
+      "Jarque bera p-value, test de normalité"
     ),
     "Valeur" = c(
       moyenne,
@@ -58,7 +59,8 @@ statistiques <- function(nom_base, nom_colonne) {
       minimum,
       maximum,
       kurtosis,
-      skewness
+      skewness, 
+      Jarque_bera
     )
   )
   return( 
@@ -81,7 +83,5 @@ statistiques <- function(nom_base, nom_colonne) {
   )
 }
 
-
-
-
+statistiques("Population","France")
 
