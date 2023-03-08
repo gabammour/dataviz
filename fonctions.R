@@ -65,7 +65,6 @@ pop <- read.csv2("Base/pop.csv", sep = ";")
 co2 <- read.csv2("Base/co2.csv", sep = ";")
 pib_hab_ppa <- read.csv2("Base/PIB_hab_ppa.csv", sep = ";")
 
-
 #Selection de la base de données: ----
 
 base_select <- function(nom_base){
@@ -116,12 +115,13 @@ mod_base <- function(adresse_base) {
   df <- df[, -2]
   df <- as.data.frame(t(df))
   colnames(df) <- df[1, ]
-  df <- df[-c(1, 64), ]
+  df <- df[-c(1), ]
   df <- apply(df, 2, as.numeric)
-  df<-as.data.frame(df)
+  df_dates <-
+    data.frame(Date = format(seq(
+      as.Date("1960-01-01"), as.Date("2022-12-31"), by = "year"
+    ), "%Y"))
+  df<-cbind(df_dates,as.data.frame(df))
   return(list(df, indicateur))
 }
-
-
-
 
