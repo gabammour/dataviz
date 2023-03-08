@@ -13,10 +13,6 @@ ui <- navbarPage(
                       tagList(
                         column(
                           width = 3,
-                          selectInput("pays", "Choisissez un pays :", choices = NULL)
-                        ),
-                        column(
-                          width = 3,
                           selectInput(
                             "indicateur",
                             "Choisissez un indicateur :",
@@ -25,10 +21,14 @@ ui <- navbarPage(
                         ),
                         column(
                           width = 3,
+                          selectInput("pays", "Choisissez un pays :", choices = NULL)
+                        ),
+                        column(
+                          width = 3,
                           selectInput(
                             "graph_type",
                             "Choisissez un type de graphique :",
-                            c("Evolution temporelle")
+                            c("Evolution temporelle","Histogramme")
                           )
                         ),
                         column(width = 3, actionButton("valider", "Valider"))
@@ -99,6 +99,19 @@ server <- function(input, output) {
           data = selected_data,
           yvar = selected_data$var_y,
           y_lab = input$indicateur
+        )
+      })
+    }
+    else if (input$graph_type == "Histogramme"){ 
+      output$graph <- renderPlot({
+        selected_col <- base_select(input$indicateur)[, input$pays]
+        selected_data <-
+          data.frame(Date = base_select(input$indicateur)$Date,
+                     var_y = selected_col)
+        plot_hist(
+          data = selected_data,
+          xvar = selected_data$var_y,
+          x_lab = input$indicateur
         )
       })
     }
