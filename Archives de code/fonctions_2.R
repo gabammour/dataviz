@@ -1,12 +1,8 @@
-# Fonctions pour la fusion : 
-
 # Librairie : 
-library(stringdist)
 library(readxl)
 library(DT)
 
-# Fonction statistiques onglet 1 & 2  : ----
-
+# Fonction des statistiques sur la base : 
 statistiques <- function(base, nom_colonne) {
   moyenne <- round(mean(base[[nom_colonne]], na.rm = TRUE), 4)
   mediane <- round(median(base[[nom_colonne]],na.rm = TRUE), 4)
@@ -59,42 +55,7 @@ statistiques <- function(base, nom_colonne) {
 }
 
 
-
-#Fonctions onglet 1 : 
-
-#Chargement des bases: ---- 
-
-pop <- read.csv2("Base/pop.csv", sep = ";")
-co2 <- read.csv2("Base/co2.csv", sep = ";")
-pib_hab_ppa <- read.csv2("Base/PIB_hab_ppa.csv", sep = ";")
-
-#Selection de la base de données: ----
-
-base_select <- function(nom_base){
-  vect_base <- c("Population", "CO2 par habitants", "PIB par habitants en PPA")
-  if (nom_base == vect_base[1]) { 
-    base <- pop
-  } else if (nom_base == vect_base[2]){ 
-    base <- co2
-  } else if(nom_base == vect_base[3]){ 
-    base <- pib_hab_ppa}
-  return(base)
-}
-
-#Selection du pays de saisie le plus proche d'un pays répertorié dans la base: ----
-pays_proche <- function(nom_base, nom_colonne){ 
-  base <- base_select(nom_base)
-  list_name <- colnames(base)[-1] # On retire la première colonne (années)
-  find <-
-    stringdist(list_name, nom_colonne, method = "lv")
-  return(unique(list_name[which(find == min(find))])[1])
-}
-
-
-
-# Fonctions onglet 2:  ----
-
-#Fonction de modification de la base 
+"1960 à 2022"
 mod_base <- function(adresse_base) {
   stopifnot(file.exists(adresse_base))
   df <- read.csv2(adresse_base ,skip = 4,sep = ",")
@@ -109,6 +70,9 @@ mod_base <- function(adresse_base) {
   return(list(df, indicateur))
 }
 
+ip <- "C:/Users/batra/Desktop/API_SP.POP.TOTL_DS2_fr_csv_v2_4904028.csv"
+
+View(mod_base(ip)[[1]])
 
 
 
