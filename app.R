@@ -84,7 +84,6 @@ server <- function(input, output) {
     }
   })
   
-  
   #Onglet 2: 
   
   # Chargement des données

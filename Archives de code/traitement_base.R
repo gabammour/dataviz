@@ -4,6 +4,11 @@ co2 <- read.csv2("Base/co2.csv", sep = ";")
 pib_hab_ppa <- read.csv2("Base/PIB_hab_ppa.csv", sep = ";")
 
 
+# Fait : 
+# colnames(co2)[1] <- "Date"
+# colnames(pib_hab_ppa)[1] <- "Date"
+# colnames(pop)[1] <- "Date"
+
 # Population mondiale # 
 #Modification faite (si besoin pour les autres )
 #library(readxl)
