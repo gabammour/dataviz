@@ -8,18 +8,36 @@ ui <- navbarPage(
     "Bases enregistrées",
     titlePanel("Indicateurs macroéconomiques par pays."),
     fluidRow(
-      column(width = 4, selectInput("pays", "Choisissez un pays :", choices = NULL)),
       column(
-        width = 4,
-        selectInput(
-          "indicateur",
-          "Choisissez un indicateur :",
-          c("Population", "CO2 par habitants", "PIB par habitants en PPA")
+        width = 12,
+        div(
+          class = "d-flex",
+          tagList(
+            column(width = 3, selectInput("pays", "Choisissez un pays :", choices = NULL)),
+            column(
+              width = 3,
+              selectInput(
+                "indicateur",
+                "Choisissez un indicateur :",
+                c("Population", "CO2 par habitants", "PIB par habitants en PPA")
+              )
+            ),
+            column(
+              width = 3,
+              selectInput(
+                "graph_type",
+                "Choisissez un type de graphique :",
+                c("Evolution temporelle")
+              )
+            ),
+            column(width = 3, actionButton("valider", "Valider"))
+          )
         )
-      ),
-      column(width = 4, actionButton("valider", "Valider"))
-    ),
-    fluidRow(column(width = 6, DTOutput("stats1")))
+      )
+    ), 
+    
+    fluidRow(column(width = 8, plotOutput("graph"), offset = 2)),
+    fluidRow(column(width = 8, DTOutput("stats1"), offset = 2))
   ),
   tabPanel(
     "Bases banque mondiales",
@@ -54,17 +72,24 @@ server <- function(input, output) {
   })
   
   observeEvent(input$valider, {
-    output$stats1 <- renderDT({
+    output$stats1<- renderDT({
       statistiques(base_select(input$indicateur), input$pays)
     })
+    if (input$graph_type == "Evolution temporelle"){
+      output$graph <- renderPlot({
+        selected_col <- pop[,input$pays]
+        selected_data <- data.frame(Date = pop$Date, Population = selected_col)
+        plot_pop(data = selected_data, xvar = "Date", yvar = "Population")
+      })
+    }
   })
+  
   
   #Onglet 2: 
   
   # Chargement des données
   data <- reactive({
     req(input$file)
-    #read.csv2(input$file$datapath, stringsAsFactors = FALSE, sep = ";")
     mod_base(input$file$datapath)[[1]]
   })
   

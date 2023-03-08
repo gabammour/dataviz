@@ -15,7 +15,6 @@ statistiques <- function(base, nom_colonne) {
   maximum <- round(max(base[[nom_colonne]],na.rm = TRUE), 4)
   kurtosis <- round(e1071::kurtosis(base[[nom_colonne]],na.rm = TRUE), 4)
   skewness <- round(e1071::skewness(base[[nom_colonne]],na.rm = TRUE), 4)
-  Jarque_bera  <- round(tseries::jarque.bera.test(base[[nom_colonne]])$p.value,4)
   resultat <- data.frame(
     "Statistiques" = c(
       "Moyenne",
@@ -24,8 +23,7 @@ statistiques <- function(base, nom_colonne) {
       "Minimum",
       "Maximum",
       "Kurtosis",
-      "Skewness",
-      "Jarque bera p-value, test de normalité"
+      "Skewness"
     ),
     "Valeur" = c(
       moyenne,
@@ -34,8 +32,7 @@ statistiques <- function(base, nom_colonne) {
       minimum,
       maximum,
       kurtosis,
-      skewness, 
-      Jarque_bera
+      skewness
     )
   )
   return( 
@@ -90,6 +87,21 @@ pays_proche <- function(nom_base, nom_colonne){
   return(unique(list_name[which(find == min(find))])[1])
 }
 
+#Plot: 
+library(ggplot2)
+# ne pas oublier : colnames(pop)[1] <- "Date"
+
+plot_pop <- function(data, xvar, yvar) {
+  ggplot(data = data, aes_string(x = xvar, y = yvar, group = 2)) +
+    geom_line() +
+    labs(title = "Evolution de la population", x = "Années", y = "Population (en habitants)", color = "Légende : " ) +
+    theme_light() +
+    theme(legend.text = element_text(size = 50))+
+    guides(color = "none")+ 
+    theme(plot.title = element_text(hjust = 0.5, vjust = 0.5)) +
+    scale_x_continuous(limits = c(1960, 2022), breaks = seq(1960, 2022, by = 5))
+}
+
 
 
 # Fonctions onglet 2:  ----
@@ -108,7 +120,6 @@ mod_base <- function(adresse_base) {
   df<-as.data.frame(df)
   return(list(df, indicateur))
 }
-
 
 
 
