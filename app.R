@@ -77,9 +77,12 @@ server <- function(input, output) {
     })
     if (input$graph_type == "Evolution temporelle"){
       output$graph <- renderPlot({
-        selected_col <- pop[,input$pays]
-        selected_data <- data.frame(Date = pop$Date, Population = selected_col)
-        plot_pop(data = selected_data, xvar = "Date", yvar = "Population")
+        selected_col <- base_select(input$indicateur)[, input$pays]
+        selected_data <-
+          data.frame(Date = base_select(input$indicateur)$Date, var_y = selected_col)
+        plot_pop(data = selected_data,
+                 yvar = "var_y",
+                 y_lab = input$indicateur)
       })
     }
   })

@@ -55,8 +55,6 @@ statistiques <- function(base, nom_colonne) {
   )
 }
 
-
-
 #Fonctions onglet 1 : 
 
 #Chargement des bases: ---- 
@@ -91,14 +89,17 @@ pays_proche <- function(nom_base, nom_colonne){
 library(ggplot2)
 # ne pas oublier : colnames(pop)[1] <- "Date"
 
-plot_pop <- function(data, xvar, yvar) {
-  ggplot(data = data, aes_string(x = xvar, y = yvar, group = 2)) +
+plot_pop <- function(data, yvar, y_lab) {
+  ggplot(data = data, aes_string(x = "Date" , y = yvar, group = 2)) +
     geom_line() +
-    labs(title = "Evolution de la population", x = "Années", y = "Population (en habitants)", color = "Légende : " ) +
+    labs(title = paste("Evolution: ", y_lab , " de 1960 à 2022."), x = "Années", y = y_lab, color = "Légende : ") +
     theme_light() +
-    theme(legend.text = element_text(size = 50))+
-    guides(color = "none")+ 
-    theme(plot.title = element_text(hjust = 0.5, vjust = 0.5)) +
+    guides(color = "none") + 
+    theme(plot.title = element_text(hjust = 0.5, vjust = 0.5, size = 20), 
+          axis.title.x = element_text(size = 16), 
+          axis.title.y = element_text(size = 16), 
+          axis.text.x = element_text(size = 14), 
+          axis.text.y = element_text(size = 14)) +
     scale_x_continuous(limits = c(1960, 2022), breaks = seq(1960, 2022, by = 5))
 }
 
