@@ -90,7 +90,7 @@ library(ggplot2)
 # ne pas oublier : colnames(pop)[1] <- "Date"
 
 plot_pop <- function(data, yvar, y_lab) {
-  ggplot(data = data, aes_string(x = "Date" , y = yvar, group = 2)) +
+  ggplot(data = data, aes(x = Date , y = yvar, group = 2)) +
     geom_line() +
     labs(title = paste("Evolution: ", y_lab , " de 1960 à 2022."), x = "Années", y = y_lab, color = "Légende : ") +
     theme_light() +
@@ -119,10 +119,7 @@ mod_base <- function(adresse_base) {
   df <- df[-c(1), ]
   df <- apply(df, 2, as.numeric)
   df_dates <-
-    data.frame(Date = format(seq(
-      as.Date("1960-01-01"), as.Date("2022-12-31"), by = "year"
-    ), "%Y"))
-  df<-cbind(df_dates,as.data.frame(df))
+    data.frame(Date = as.numeric(seq(1960,2022, by = 1)))
+  df<-cbind(Date = df_dates,as.data.frame(df))
   return(list(df, indicateur))
 }
-
