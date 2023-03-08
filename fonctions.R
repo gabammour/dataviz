@@ -1,7 +1,7 @@
 # Librairie : 
 library(DT)
 library(stringdist)
-
+library(ggplot2)
 
 #Chargement des bases: 
 pop <- read.csv2("Base/pop.csv", sep = ";")
@@ -85,3 +85,14 @@ statistiques <- function(nom_base, nom_colonne) {
 
 statistiques("Population","France")
 
+
+
+plot_pop <- function(data, xvar, yvar) {
+  ggplot(data = data, aes_string(x = xvar, y = yvar, group = 2)) +
+    geom_line() +
+    labs(title = "Evolution de la population", x = "Années", y = "Population (en habitants)", color = "Légende : " ) +
+    theme_light() +
+    guides(color = "none")+ 
+    theme(plot.title = element_text(hjust = 0.5, vjust = 0.5))
+}
+plot_pop(pop, pop$Date, pop$France)

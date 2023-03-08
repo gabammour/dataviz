@@ -13,6 +13,8 @@ pib_hab_ppa <- read.csv2("Base/PIB_hab_ppa.csv", sep = ";")
 #pop <- t(pop)
 #colnames(pop) <- pop[1,]
 #pop <- pop[-1,-c(2,4)]
+#pop$X <- as.numeric(substr(pop$X, 2, 5))
+#colnames(pop)[1] <- "Date"
 #write.csv2(pop, "Base/pop.csv", row.names = FALSE)
 
 
@@ -35,5 +37,4 @@ pib_hab_ppa <- read.csv2("Base/PIB_hab_ppa.csv", sep = ";")
 # PPA <- as.data.frame(PPA)
 # str(PPA)
 # write.csv2(PPA,"BASE/PIB_hab_ppa.csv", row.names = FALSE)
-
 
