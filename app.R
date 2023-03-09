@@ -156,7 +156,7 @@ server <- function(input, output) {
       selection = 'none',
       options = list(
         dom = "Bfrtip",
-        pageLength = 10,
+        pageLength = 100,
         select = list(style = 'os', items = 'row'),
         buttons = c(
           'copy',
