@@ -1,5 +1,6 @@
 library(shiny)
 library(DT)
+library(rmarkdown)
 
 ui <- navbarPage(
   theme = bslib::bs_theme(bootswatch = "lux"),
@@ -41,6 +42,10 @@ ui <- navbarPage(
     fluidRow(column(
       width = 8, DTOutput("stats1"), offset = 2
     ))
+  ),
+  tabPanel(
+    "En savoir plus",
+    includeMarkdown("En_savoir_plus.md")
   ),
   tabPanel(
     "Bases banque mondiales",
@@ -117,7 +122,7 @@ server <- function(input, output) {
     }
   })
   
-  #Onglet 2: ----
+  #Onglet 3: ----
   
   # Chargement des données
   data <- reactive({
@@ -182,6 +187,7 @@ server <- function(input, output) {
     )
   })
 }
+
 
 shinyApp(ui = ui, server = server)
 
