@@ -25,11 +25,7 @@ ui <- navbarPage(
                         ),
                         column(
                           width = 3,
-                          selectInput(
-                            "graph_type",
-                            "Choisissez un type de graphique :",
-                            c("Evolution temporelle","Histogramme")
-                          )
+                          selectInput("pays2","Choississez un deuxième pays :", choices = NULL)
                         ),
                         column(width = 3, actionButton("valider", "Valider"))
                       )
@@ -55,8 +51,9 @@ ui <- navbarPage(
                     )
                   ),
                   accept = ".csv"),
+        verbatimTextOutput("Nom_base"),
         selectInput("monpays", "Sélectionner un pays", choices = NULL),
-        verbatimTextOutput("Nom_base")
+        selectInput("monpays2", "Sélectionner un deuxieme pays", choices = NULL)
       ),
       mainPanel(tabsetPanel(
         id = "tabs",
@@ -84,12 +81,22 @@ server <- function(input, output) {
                       choices = choix_pays())
   })
   
+  choix_pays2 <-reactive({
+    c("Aucun",colnames(base_select(input$indicateur))[-1])
+  })
+  
+  observe({
+    updateSelectInput(inputId = "pays2", 
+                      label = "Choississez un deuxième pays :", 
+                      choices = choix_pays2())
+  })
+  
   observeEvent(input$valider, {
     output$stats1 <- renderDT({
       statistiques(base_select(input$indicateur), input$pays)
     })
     
-    if (input$graph_type == "Evolution temporelle") {
+      if (input$pays2 == "Aucun"){
       output$graph <- renderPlot({
         selected_col <- base_select(input$indicateur)[, input$pays]
         selected_data <-
@@ -102,20 +109,23 @@ server <- function(input, output) {
           titre_lab = input$indicateur
         )
       })
-    }
-    else if (input$graph_type == "Histogramme"){ 
+      }
+    else { 
       output$graph <- renderPlot({
-        selected_col <- base_select(input$indicateur)[, input$pays]
-        selected_data <-
-          data.frame(Date = base_select(input$indicateur)$Date,
-                     var_y = selected_col)
-        plot_hist(
-          data = selected_data,
-          xvar = selected_data$var_y,
-          x_lab = input$indicateur
-        )
+        selected_col1 <- base_select(input$indicateur)[, input$pays]
+        selected_col2 <- base_select(input$indicateur)[, input$pays2]
+        selected_data2 <- data.frame(Date = base_select(input$indicateur)$Date,
+                                     var_y = selected_col1, 
+                                     var_y2 = selected_col2)
+        plot_both(data = selected_data2, 
+                  yvar = selected_data2$var_y,
+                  y_lab = input$pays,
+                  yvar2 = selected_data2$var_y2, 
+                  y_lab2 = input$pays2,
+                  titre_lab = input$indicateur
+                  )
       })
-    }
+      }
   })
   
   #Onglet 2: ----
@@ -133,6 +143,13 @@ server <- function(input, output) {
                       choices = colnames(data())[2:length(colnames(data()))])
   })
   
+  #Selection deuxieme colonne 
+  observe({
+    req(data())
+    updateSelectInput(inputId = "monpays2",
+                      choices = c("Aucun",colnames(data())[2:length(colnames(data()))]))
+  })
+  
   #Affichage du nom de la base
   output$Nom_base <- renderText({
     if (is.null(input$file)) {
@@ -144,8 +161,15 @@ server <- function(input, output) {
   # Affichage des statistiques
   
   output$stats <- renderDT({
-    req(data(), input$monpays)
-    statistiques(data(), input$monpays)
+    
+    if(input$monpays2 == "Aucun"){ 
+      req(data(), input$monpays)
+      statistiques(data(), input$monpays)
+    }
+    else{ 
+      req(data(), input$monpays)
+      statistiques2(data(), input$monpays, input$monpays2)
+      }
   })
   
   output$table_traitee <- renderDT({
@@ -173,19 +197,37 @@ server <- function(input, output) {
   })
   
   output$plot_base <- renderPlot({
+  if (input$monpays2 == "Aucun"){
+  
     selected_col <- data()[[input$monpays]]
     selected_data <-
       data.frame(Date = data()$Date, var_y = selected_col)
+    
     plot_pop(
       data = selected_data,
       yvar = selected_data$var_y,
       y_lab = input$monpays,
       titre_lab = mod_base(input$file$datapath)[[2]]
     )
+  }
+  else { 
+      selected_col1 <- data()[[input$monpays]]
+      selected_col2 <- data()[[input$monpays2]]
+      selected_data2 <-
+        data.frame(Date = data()$Date, 
+                   var_y = selected_col1, 
+                   var_y2 = selected_col2)
+      plot_both(
+              data = selected_data2, 
+              yvar =selected_data2$var_y,
+              y_lab = input$monpays,
+              yvar2 = selected_data2$var_y2, 
+              y_lab2 = input$monpays2,
+              titre_lab = mod_base(input$file$datapath)[[2]]
+              )
+  }
   })
 }
 
 shinyApp(ui = ui, server = server)
-
-
 
