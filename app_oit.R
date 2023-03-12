@@ -44,7 +44,7 @@ ui <- navbarPage(
     ))
   ),
   tabPanel(
-    "En savoir plus",
+    "En savoir plus sur les indicateurs",
     includeMarkdown("En_savoir_plus.md")
   ),
   tabPanel(
