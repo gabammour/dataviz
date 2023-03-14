@@ -1,5 +1,13 @@
+#Library: 
+
 library(shiny)
 library(DT)
+
+#charger les fonctions: 
+
+source("fonctions.R")
+
+#Code : 
 
 ui <- navbarPage(
   theme = bslib::bs_theme(bootswatch = "lux"),

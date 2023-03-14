@@ -15,7 +15,7 @@ L'utilisation de la variable population peut avoir des limites. Elle ne tient pa
 En conclusion, la variable population est un outil important pour comprendre les tendances économiques et sociales. Elle peut aider les décideurs politiques à adapter les politiques publiques en fonction des besoins de la population et à évaluer les relations internationales. Cependant, elle peut également avoir des limites et ne pas refléter la diversité économique et sociale au sein d'un pays. Les chercheurs et les décideurs politiques doivent utiliser la variable population avec précaution et en tenant compte des différences culturelles et ethniques pour éviter les généralisations inexactes.  
 
 
-# Emissions de CO2
+# Emissions de CO2 par habitants
 
 Les émissions de CO2 par habitant sont une mesure de la quantité de dioxyde de carbone émis dans l'atmosphère par personne dans un pays donné. Cette mesure permet de déterminer la quantité de gaz à effet de serre produite par habitant et elle est souvent utilisée comme indicateur de l'empreinte carbone d'un pays.
 
