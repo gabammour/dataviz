@@ -176,9 +176,9 @@ library(DT)
     
     #Chargement des bases: ----
     
-    pop <- read.csv2("Base/pop.csv", sep = ";")
-    co2 <- read.csv2("Base/co2.csv", sep = ";")
-    pib_hab_ppa <- read.csv2("Base/PIB_hab_ppa.csv", sep = ";")
+    pop <- read.csv2("BASE/pop.csv", sep = ";")
+    co2 <- read.csv2("BASE/co2.csv", sep = ";")
+    pib_hab_ppa <- read.csv2("BASE/PIB_hab_ppa.csv", sep = ";")
     
     #Selection de la base de données: ----
     

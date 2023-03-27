@@ -1,0 +1,156 @@
+---
+title: "Application R-Shiny"
+author: "Tranvouez Benoît-Alexandre, Ammour Gabriel"
+date: "27 Mars 2023"
+format: 
+  revealjs:
+        theme: default
+        incremental: true
+        mainfont: sans-serif
+        toc: false
+        transition: slide
+        background-transition: fade
+        code-fold: true
+        code-line-numbers: false
+        code-overflow: scroll
+        
+---
+
+## Objectif 
+
+- Créer une application permettant d'obtenir les statistiques descriptives de n'importe quelle base de donnée
+
+- Visualiser ces données à travers des projections temporelles
+
+- Effectuer des comparaisons entre pays
+
+## Etapes
+
+- Statistiques descriptives pour un pays et un indicateurs
+
+- Graphiques pour un pays et un indicateur
+
+- Stat. des/Graphiques pour deux pays et un indicateurs
+
+## Structure de l'application {.smaller}
+
+#### `fonctions.R`
+
+- Importation des données
+
+```{r, eval=FALSE, echo=TRUE}
+pop <- read.csv2("BASE/pop.csv", sep = ";")
+```
+
+- Fonctions statistiques
+
+```{r, eval=FALSE, echo=TRUE}
+statistiques <- function(base, nom_colonne) {
+    if (all(is.na(base[[nom_colonne]]))) {
+      moyenne = mediane = ecart_type = minimum = maximum = kurtosis = skewness = "Données vides pour le pays."
+    }
+    else {
+      moyenne <- round(mean(base[[nom_colonne]], na.rm = TRUE), 4)
+      mediane <- round(median(base[[nom_colonne]], na.rm = TRUE), 4)
+      ecart_type <- round(sd(base[[nom_colonne]], na.rm = TRUE), 4)
+      minimum <- round(min(base[[nom_colonne]], na.rm = TRUE), 4)
+      maximum <- round(max(base[[nom_colonne]], na.rm = TRUE), 4)
+```
+
+- Fonctions graphiques
+
+```{r, eval=FALSE, echo=TRUE}
+#| code-overflow: scroll
+plot_pop <- function(data, yvar, y_lab , titre_lab) {
+      if (all(is.na(yvar))) {
+        ggplot() +
+          labs(title = "Jeu de données vide pour le pays.",
+               x = "",
+               y = "") +
+          theme_void()
+      } else {
+        ggplot(data = data, aes(
+          x = Date ,
+          y = yvar,
+          group = 2
+        )) +
+          geom_line() +
+          labs(
+            title = paste(y_lab, ": ", titre_lab , "de 1960 à 2022."),
+            x = "Années",
+            y = titre_lab,
+            color = "Légende : "
+          )
+```
+## Structure de l'application {.smaller}
+#### `app.R`
+- Charger les fonctions du fichier précédent
+```{r, eval=FALSE, echo=TRUE}
+#charger les fonctions: 
+source("fonctions.R")
+```
+- Paramétrer l'interface utilisateur
+```{r, eval=FALSE, echo=TRUE}
+ui <- navbarPage(
+  theme = bslib::bs_theme(bootswatch = "lux"),
+  "Indicateurs Macroéconomiques",
+  tabPanel(
+    "Bases enregistrées",
+    titlePanel("Indicateurs macroéconomiques par pays."),
+```
+
+- Gérer les intéractions
+
+```{r, eval=FALSE, echo=TRUE}
+server <- function(input, output) {
+  #Onglet 1 : ----
+  choix_pays <- reactive({
+    colnames(base_select(input$indicateur))[-1]
+  })
+  
+  observe({
+    updateSelectInput(inputId = "pays",
+                      label = "Choisissez un pays :",
+                      choices = choix_pays())
+  })
+```
+
+
+
+- Run l'application
+
+```{r, eval=FALSE, echo=TRUE}
+shinyApp(ui = ui, server = server)
+```
+
+
+## Indicateurs
+
+::: {.panel-tabset}
+
+### PIB/Habitant
+
+Le PIB/Habitant est une mesure de la richesse économique d'un pays qui est calculée en divisant le produit intérieur brut (PIB) par la population totale du pays.
+
+### Emissions de CO2/habitant
+
+- Les émissions de CO2 par habitant sont une mesure de la quantité de dioxyde de carbone émis dans l'atmosphère par personne dans un pays donné.
+
+### Population
+
+- La population est un facteur clé dans l'évaluation de l'état d'un pays, de sa croissance économique et de son développement.
+
+:::
+
+## Limites / Points à améliorer
+
+- Ne permet pas de comparer deux indicateurs différents 
+
+- Utile que pour des indicateurs aux données temporelles 
+
+- Rendre l'application plus attractive visuellement 
+
+# Application 
+
+<iframe src="http://localhost:1234" width="100%" height="600"></iframe>
+

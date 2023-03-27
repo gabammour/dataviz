@@ -46,7 +46,7 @@ ui <- navbarPage(
       width = 8, DTOutput("stats1"), offset = 2
     ))
   ),
-  tabPanel("Indicateurs infos",
+  tabPanel("Indicateurs",
            includeMarkdown("En_savoir_plus.md")),
   tabPanel(
     "Bases banque mondiales",
